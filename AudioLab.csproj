@@ -21,10 +21,29 @@
         <AssemblyVersion>1.0.0.0</AssemblyVersion>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Compile Remove="lib\**" />
+      <EmbeddedResource Remove="lib\**" />
+      <None Remove="lib\**" />
+    </ItemGroup>
+
 
     <ItemGroup>
         <PackageReference Include="NAudio" Version="3.1.0" />
         <!-- <PackageReference Include="NAudio.Extras" Version="3.1.0" /> -->
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <Reference Include="Ephemera.MidiLib">
+        <HintPath>lib\Ephemera.MidiLib.dll</HintPath>
+      </Reference>
+      <Reference Include="Ephemera.NBagOfTricks">
+        <HintPath>lib\Ephemera.NBagOfTricks.dll</HintPath>
+      </Reference>
+      <Reference Include="Ephemera.NBagOfUis">
+        <HintPath>lib\Ephemera.NBagOfUis.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>
