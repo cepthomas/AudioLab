@@ -1,0 +1,100 @@
+C:\Dev\Libs ============================================================================================================================
++---AudioLib
+|   |   AudioCommon.cs (3k)
+|   |   AudioFileInfo.cs (7k)
+|   |   AudioPlayer.cs (4k)
+|   |   AudioSettings.cs (2k)
+|   |   BarOps.cs (4k)
+|   |   ClipSampleProvider.cs (6k)
+|   |   NAudioEx.cs (9k)
+|   |   NullSampleProvider.cs (525b)
+|   |   PeakProvider.cs (2k)
+|   |   ProgressBar.cs (8k)
+|   |   SampleOps.cs (1k)
+|   |   SwappableSampleProvider.cs (2k)
+|   |   TimeOps.cs (4k)
+|   |   ToolStripParamEditor.cs (3k)
+|   |   WaveViewer.cs (29k)
+|   \---Test
+|           TestHost.cs (17k)
++---IconicSelector !!!!
++---LuaInterop ????
++---MidiLib
+|   |   Channel.cs (10k)
+|   |   ChannelControl.cs (13k)
+|   |   Common.cs (2k)
+|   |   Events.cs (9k)
+|   |   gm_defs.ini (4k)
+|   |   IDevice.cs (1k)
+|   |   MidiDefs.cs (5k)
+|   |   MidiDevice.cs (6k)
+|   |   MidiManager.cs (10k)
+|   |   MusicTime.cs (8k)
+|   |   NullDevice.cs (3k)
+|   |   OscDevice.cs (9k)
+|   |   TimeBar.cs (16k)
+|   |   TypeEditors.cs (1k)
+|   |   UserRenderer.cs (777b)
+|   \---Test
+|           CustomRenderer.cs (5k)
+|           MainForm.cs (14k)
+|           MockNAudio.cs (5k)
++---MusicLib ????
++---NBagOfTricks -- as needed
++---NBagOfUis -- as needed
+|   |   ChoiceSelector.cs (1k)
+|   |   ClickGrid.cs (7k)
+|   |   DropDownButton.cs (2k)
+|   |   FilTree.cs (13k)
+|   |   GraphicsUtils.cs (7k)
+|   |   Meter.cs (10k)
+|   |   OptionsEditor.cs (7k)
+|   |   Pan.cs (5k)
+|   |   Pot.cs (8k)
+|   |   PropertyGridEx.cs (7k)
+|   |   SettingsEditor.cs (2k)
+|   |   Slider.cs (10k)
+|   |   TextViewer.cs (6k)
+|   |   TypeEditors.cs (8k)
+|   |   WaitCursor.cs (716b)
+|   \---Test
+|          TestHost.cs (11k)
++---NebOsc ????
++---NStateMachine -- as needed
+
+
+
+C:\Dev\Apps ============================================================================================================================
++---ClipPlayer
+|   |   AudioClipPlayer.cs (5k)
+|   |   Ipc.cs (13k)
+|   |   MidiClipPlayer.cs (9k)
+|   |   NullPlayer.cs (1k)
+|   |   Transport.cs (14k) -- control
++---Midifrier
+|   |   Export.cs (13k)
+|   |   MainForm.cs (32k)
+|   |   MidiDataFile.cs (17k)
+|   |   ProgressBar.cs (7k)
+|   |   Track.cs (3k)
++---MidiGenerator
+|   |   ClickClack.cs (7k) -- control
+|   |   MainForm.cs (7k)
+|   |   VirtualKeyboard.cs (14k) -- control
++---Nebulua
+|   |   MainForm.cs (34k)
+|   +---Interop
+|   +---LBOT
+|   +---lua
++---SoundSuck ????
++---Wavicler
+|   |   ClipEditor.cs (5k) -- control
+|   |   MainForm.cs (29k)
+
+
+
+C:\Dev\Misc ============================================================================================================================
++---NLab
+|   |   MockStream.cs (3k)
+|   |   SavingWaveProvider.cs (1k)
++---TestAudioFiles -- !!!!

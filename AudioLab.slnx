@@ -1,0 +1,5 @@
+<Solution>
+  <!-- <Project Path="../../Libs/AudioLib/AudioLib.csproj" /> -->
+  <!-- <Project Path="../../Libs/MidiLib/MidiLib.csproj" /> -->
+  <Project Path="AudioLab.csproj" />
+</Solution>
