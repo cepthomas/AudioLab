@@ -16,6 +16,13 @@ using Ephemera.MidiLib;
 // <!--TODO This makes a weird warning go away - not fixable via configuration manager.-->
 // <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 
+
+// /// <summary>All channel play controls.</summary>
+// readonly List<ChannelControl> _channelControls = [];
+
+
+
+
 namespace AudioLab // was Nebulua
 {
     public partial class MainForm : Form
@@ -36,6 +43,12 @@ namespace AudioLab // was Nebulua
             /// <summary>Fatal error, not running.</summary>
             Dead
         }
+
+        #region Types
+        /// <summary>What are we doing.</summary>
+        public enum AppState { Stop, Play, Rewind, Complete, Dead }
+        #endregion
+
         #endregion
 
         #region Fields
@@ -54,18 +67,20 @@ namespace AudioLab // was Nebulua
         /// <summary>The current settings.</summary>
         UserSettings _settings = new();
 
-        ///// <summary>The interop.</summary>
-        //readonly Interop _interop = new();
-
         /// <summary>Fast timer.</summary>
         readonly MmTimerEx _mmTimer = new();
 
-        /// <summary>Current script. Null means none.</summary>
-        string? _scriptFn = null;
+        // /// <summary>Current script. Null means none.</summary>
+        // string? _scriptFn = null;
 
-        /// <summary>Test for edited.</summary>
-        DateTime _scriptTouch;
 
+        string? _fn = null;
+
+        // /// <summary>Test for edited.</summary>
+        // DateTime _scriptTouch;
+        #endregion
+
+        #region Midi
         /// <summary>All midi devices to use for send.</summary>
         readonly List<MidiOutputDevice> _outputDevices = [];
 
@@ -104,15 +119,15 @@ namespace AudioLab // was Nebulua
             SetTitle();
 
             #region Init the controls
-            GraphicsUtils.ColorizeControl(chkPlay, _settings.IconColor);
-            chkPlay.BackColor = BackColor;
-            chkPlay.FlatAppearance.CheckedBackColor = _settings.SelectedColor;
-            chkPlay.Click += Play_Click;
+            //GraphicsUtils.ColorizeControl(chkPlay, _settings.IconColor);
+            //chkPlay.BackColor = BackColor;
+            //chkPlay.FlatAppearance.CheckedBackColor = _settings.SelectedColor;
+            //chkPlay.Click += Play_Click;
 
-            GraphicsUtils.ColorizeControl(chkLoop, _settings.IconColor);
-            chkLoop.BackColor = BackColor;
-            chkLoop.FlatAppearance.CheckedBackColor = _settings.SelectedColor;
-            chkLoop.Click += (_, __) => timeBar.DoLoop = chkLoop.Checked;
+            //GraphicsUtils.ColorizeControl(chkLoop, _settings.IconColor);
+            //chkLoop.BackColor = BackColor;
+            //chkLoop.FlatAppearance.CheckedBackColor = _settings.SelectedColor;
+            //chkLoop.Click += (_, __) => timeBar.DoLoop = chkLoop.Checked;
 
             chkMonRecv.BackColor = BackColor;
             GraphicsUtils.ColorizeControl(chkMonRecv, _settings.IconColor);
@@ -126,9 +141,9 @@ namespace AudioLab // was Nebulua
             chkMonSend.Checked = _settings.MonitorSend;
             chkMonSend.Click += (_, __) => _settings.MonitorSend = chkMonSend.Checked;
 
-            btnRewind.BackColor = BackColor;
-            GraphicsUtils.ColorizeControl(btnRewind, _settings.IconColor);
-            btnRewind.Click += Rewind_Click;
+            //btnRewind.BackColor = BackColor;
+            //GraphicsUtils.ColorizeControl(btnRewind, _settings.IconColor);
+            //btnRewind.Click += Rewind_Click;
 
             btnAbout.BackColor = BackColor;
             GraphicsUtils.ColorizeControl(btnAbout, _settings.IconColor);
@@ -142,19 +157,22 @@ namespace AudioLab // was Nebulua
             GraphicsUtils.ColorizeControl(btnSettings, _settings.IconColor);
             btnSettings.Click += Settings_Click;
 
-            sldVolume.BackColor = BackColor;
-            sldVolume.DrawColor = _settings.DrawColor;
-            //sldVolume.ValueChanged += (_, __) => _volume = sldVolume.Value;
+            //sldVolume.BackColor = BackColor;
+            //sldVolume.DrawColor = _settings.DrawColor;
+            ////sldVolume.ValueChanged += (_, __) => _volume = sldVolume.Value;
 
-            sldTempo.BackColor = BackColor;
-            sldTempo.DrawColor = _settings.DrawColor;
-            sldTempo.ValueChanged += (_, __) => { SetTimer((int)sldTempo.Value); };
+            //sldTempo.BackColor = BackColor;
+            //sldTempo.DrawColor = _settings.DrawColor;
+            //sldTempo.ValueChanged += (_, __) => { SetTimer((int)sldTempo.Value); };
+
+            //            btnAutoplay.Checked = _settings.Autoplay;
+            //            btnAutoplay.Click += (_, __) => _settings.Autoplay = btnAutoplay.Checked;
 
             tvInfo.BackColor = BackColor;
             tvInfo.Font = new("Cascadia Mono", 9);
             tvInfo.Prompt = "";
             tvInfo.WordWrap = _settings.WordWrap;
-            tvInfo.Matchers = 
+            tvInfo.Matchers =
             [
                 new("ERR", Color.Red),
                 new("WRN", Color.Green),
@@ -184,8 +202,8 @@ namespace AudioLab // was Nebulua
             //Interop.SendController += Interop_SendController;
             //Interop.SetTempo += Interop_SetTempo;
 
-            MidiManager.Instance.MessageReceived += Mgr_MessageReceived;
-            MidiManager.Instance.MessageSent += Mgr_MessageSent;
+            //MidiManager.Instance.MessageReceived += Mgr_MessageReceived;
+            //MidiManager.Instance.MessageSent += Mgr_MessageSent;
 
             Thread.CurrentThread.Name = "MAIN";
         }
@@ -201,7 +219,7 @@ namespace AudioLab // was Nebulua
                 OpenScriptFile(_settings.RecentFiles[0]);
             }
 
-            MidiDefs.GenUserDeviceInfo().ForEach(l => tvInfo.Append(l));
+            //MidiDefs.GenUserDeviceInfo().ForEach(l => tvInfo.Append(l));
 
             base.OnLoad(e);
         }
@@ -276,27 +294,27 @@ namespace AudioLab // was Nebulua
                 // Determine file to load. Null means reload current.
                 if (openScriptFn is not null)
                 {
-                    _scriptFn = openScriptFn;
+                    _fn = openScriptFn;
                 }
 
                 // Check valid file.
-                if (_scriptFn is null || !_scriptFn.EndsWith(".lua") || !Path.Exists(_scriptFn))
+                if (_fn is null || !_fn.EndsWith(".lua") || !Path.Exists(_fn))
                 {
-                    _scriptFn = null;
-                    _scriptTouch = DateTime.MinValue;
-                    throw new AppException($"Invalid script file [{_scriptFn}]");
+                    _fn = null;
+                    //_scriptTouch = DateTime.MinValue;
+                    throw new AppException($"Invalid script file [{_fn}]");
                 }
 
                 // OK to load.
-                _scriptTouch = File.GetLastWriteTime(_scriptFn);
-                _loggerApp.Info($"Loading script {_scriptFn}");
+                //_scriptTouch = File.GetLastWriteTime(_fn);
+                _loggerApp.Info($"Loading script {_fn}");
 
                 // Set up runtime lua environment. The lua lib files, the dir containing the script file.
                 var srcDir = MiscUtils.GetSourcePath(); // The source dir.
-                var scriptDir = Path.GetDirectoryName(_scriptFn);
+                var scriptDir = Path.GetDirectoryName(_fn);
                 var luaPath = $"{scriptDir}\\?.lua;{srcDir}\\LBOT\\?.lua;{srcDir}\\lua\\?.lua;;";
 
-                _settings.UpdateMru(_scriptFn!);
+                _settings.UpdateMru(_fn!);
 
                 //_interop.RunScript(_scriptFn, luaPath);
                 //string smeta = _interop.Setup();
@@ -313,10 +331,24 @@ namespace AudioLab // was Nebulua
 
                 //timeBar.InitSectionInfo(sectInfo);
 
+
+                Dictionary<int, string> sectInfo = [];
+                var chunks = "DOO|DAA|DUM".SplitByToken("|");
+
+                chunks.ForEach(ch =>
+                {
+                    var elems = ch.SplitByToken(",");
+                    sectInfo[int.Parse(elems[1])] = elems[0];
+                });
+
+                timeBar.InitSectionInfo(sectInfo);
+
+
+
                 CreateControls();
 
                 // Start timer.
-                sldTempo.Value = 100;
+                //>>>                sldTempo.Value = 100;
                 _mmTimer.Start();
 
                 UpdateState(ExecState.Idle);
@@ -373,7 +405,7 @@ namespace AudioLab // was Nebulua
             List<string> options = [];
             options.Add("Open...");
 
-            if (_scriptFn is not null)
+            if (_fn is not null)
             {
                 options.Add("Reload");
             }
@@ -398,49 +430,49 @@ namespace AudioLab // was Nebulua
             switch (state)
             {
                 case ExecState.Empty:
-                    _scriptFn = null;
-                    chkPlay.Checked = false;
-                    chkPlay.Enabled = false;
+                    _fn = null;
+                    //chkPlay.Checked = false;
+                    //chkPlay.Enabled = false;
                     MidiManager.Instance.Kill();
                     _execState = ExecState.Empty;
                     break;
 
                 case ExecState.Idle:
-                    if (_scriptFn is not null)
+                    if (_fn is not null)
                     {
-                        chkPlay.Checked = false;
-                        chkPlay.Enabled = true;
+                        //chkPlay.Checked = false;
+                        //chkPlay.Enabled = true;
                         MidiManager.Instance.Kill();
                         _execState = ExecState.Idle;
                     }
                     else
                     {
-                        chkPlay.Checked = false;
-                        chkPlay.Enabled = false;
+                        //chkPlay.Checked = false;
+                        //chkPlay.Enabled = false;
                         MidiManager.Instance.Kill();
                         _execState = ExecState.Empty;
                     }
                     break;
 
                 case ExecState.Run:
-                    if (_scriptFn is not null)
+                    if (_fn is not null)
                     {
-                        chkPlay.Checked = true;
-                        chkPlay.Enabled = true;
+                        //chkPlay.Checked = true;
+                        //chkPlay.Enabled = true;
                         _execState = ExecState.Run;
                     }
                     else
                     {
-                        chkPlay.Checked = false;
-                        chkPlay.Enabled = false;
+                        //chkPlay.Checked = false;
+                        //chkPlay.Enabled = false;
                         MidiManager.Instance.Kill();
                         _execState = ExecState.Empty;
                     }
                     break;
 
                 case ExecState.Dead:
-                    chkPlay.Checked = false;
-                    chkPlay.Enabled = false;
+                    //chkPlay.Checked = false;
+                    //chkPlay.Enabled = false;
                     MidiManager.Instance.Kill();
                     _execState = ExecState.Dead;
                     break;
@@ -448,7 +480,7 @@ namespace AudioLab // was Nebulua
 
             SetTitle();
         }
-        
+
         /// <summary>
         /// Update state.
         /// </summary>
@@ -456,24 +488,24 @@ namespace AudioLab // was Nebulua
         /// <param name="e"></param>
         void Play_Click(object? sender, EventArgs e)
         {
-            if (chkPlay.Checked)
-            {
-                // Maybe reload.
-                if (_settings.AutoReload && _scriptFn is not null)
-                {
-                    var touch = File.GetLastWriteTime(_scriptFn);
-                    if (touch > _scriptTouch)
-                    {
-                        OpenScriptFile(null);
-                    }
-                }
+            //if (chkPlay.Checked)
+            //{
+            //    // Maybe reload.
+            //    if (_settings.AutoReload && _fn is not null)
+            //    {
+            //        var touch = File.GetLastWriteTime(_fn);
+            //        //if (touch > _scriptTouch)
+            //        //{
+            //        //    OpenScriptFile(null);
+            //        //}
+            //    }
 
-                UpdateState(ExecState.Run);
-            }
-            else
-            {
-                UpdateState(ExecState.Idle);
-            }
+            //    UpdateState(ExecState.Run);
+            //}
+            //else
+            //{
+            //    UpdateState(ExecState.Idle);
+            //}
         }
 
         /// <summary>
@@ -571,7 +603,7 @@ namespace AudioLab // was Nebulua
                     _loggerApp.Debug(e.ToString());
                     UpdateState(ExecState.Empty);
                     break;
-                    
+
                 default: // other/unknon - assume fatal
                     // Logging an exception will cause the app to stop.
                     _loggerApp.Exception(e);
@@ -606,7 +638,7 @@ namespace AudioLab // was Nebulua
                     // Check for end of play. If free running keep going.
                     if (!timeBar.FreeRunning && done)
                     {
-                        if (chkLoop.Checked)
+                        if (masterControl1.Loop)
                         {
                             timeBar.Rewind();
                         }
@@ -638,24 +670,24 @@ namespace AudioLab // was Nebulua
                 var chnd = HandleOps.Create(indev.Id, e.ChannelNumber, false);
                 bool logit = true;
 
-                switch (e)
-                {
-                    case NoteOn evt:
-                        //_interop.ReceiveNote(chnd, evt.Note, (double)evt.Velocity / MidiDefs.MAX_MIDI);
-                        break;
+                //switch (e)
+                //{
+                //    case NoteOn evt:
+                //        //_interop.ReceiveNote(chnd, evt.Note, (double)evt.Velocity / MidiDefs.MAX_MIDI);
+                //        break;
 
-                    case NoteOff evt:
-                        //_interop.ReceiveNote(chnd, evt.Note, 0);
-                        break;
+                //    case NoteOff evt:
+                //        //_interop.ReceiveNote(chnd, evt.Note, 0);
+                //        break;
 
-                    case Controller evt:
-                        //_interop.ReceiveController(chnd, (int)evt.Id, evt.Value);
-                        break;
+                //    case Controller evt:
+                //        //_interop.ReceiveController(chnd, (int)evt.Id, evt.Value);
+                //        break;
 
-                    default: // Ignore others for now.
-                        logit = false;
-                        break;
-                }
+                //    default: // Ignore others for now.
+                //        logit = false;
+                //        break;
+                //}
 
                 if (logit && _settings.MonitorRecv)
                 {
@@ -704,7 +736,7 @@ namespace AudioLab // was Nebulua
                     channel.Enable = enable;
                     if (!enable)
                     {
-                        MidiManager.Instance.Kill(channel);
+//                        MidiManager.Instance.Kill(channel);
                     }
                 }
             }
@@ -867,7 +899,7 @@ namespace AudioLab // was Nebulua
             {
                 var ctrl = new ChannelControl()
                 {
-                    BoundChannel = chan,
+ //                   BoundChannel = chan,
                     Options = DisplayOptions.SoloMute,
                     Location = new(x, y),
                     BorderStyle = BorderStyle.FixedSingle,
@@ -907,7 +939,7 @@ namespace AudioLab // was Nebulua
                     if (!enable)
                     {
                         // Kill just in case.
-                        MidiManager.Instance.Kill(channel);
+//                        MidiManager.Instance.Kill(channel);
                     }
                 }
             }
@@ -920,7 +952,7 @@ namespace AudioLab // was Nebulua
         /// </summary>
         void SetTitle()
         {
-            Text = $"AudioLab {MiscUtils.GetVersionString()} - {_scriptFn ?? "No file loaded"} - <<<{_execState}>>>";
+            Text = $"AudioLab {MiscUtils.GetVersionString()} - {_fn ?? "No file loaded"} - <<<{_execState}>>>";
         }
 
         /// <summary>
@@ -994,11 +1026,11 @@ namespace AudioLab // was Nebulua
         /// <param name="e"></param>
         void About_Click(object? sender, EventArgs e)
         {
-            // Main help.
-            Tools.ShowReadme("AudioLab");
+            //// Main help.
+            //Tools.ShowReadme("AudioLab");
 
-            // Show them what they have.
-            MidiDefs.GenUserDeviceInfo().ForEach(l => tvInfo.Append(l));
+            //// Show them what they have.
+            //MidiDefs.GenUserDeviceInfo().ForEach(l => tvInfo.Append(l));
         }
 
         /// <summary>
@@ -1020,5 +1052,10 @@ namespace AudioLab // was Nebulua
             }
         }
         #endregion
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

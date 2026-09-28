@@ -27,6 +27,16 @@
       <None Remove="lib\**" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="MasterM.cs" />
+      <Compile Remove="MasterW.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="MasterM.cs" />
+      <Content Include="MasterW.cs" />
+    </ItemGroup>
+
 
     <ItemGroup>
         <PackageReference Include="NAudio" Version="3.1.0" />
