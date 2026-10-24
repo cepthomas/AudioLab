@@ -34,7 +34,6 @@ namespace AudioLab
             timeBar = new TimeBar();
             ddbtnFile = new Ephemera.NBagOfUis.DropDownButton();
             toolTip = new ToolTip(components);
-            masterControl1 = new MasterControl();
             menuStrip1 = new MenuStrip();
             toolStripMenuItem1 = new ToolStripMenuItem();
             toolStripMenuItem2 = new ToolStripMenuItem();
@@ -63,7 +62,6 @@ namespace AudioLab
             // btnAbout
             // 
             btnAbout.FlatStyle = FlatStyle.Flat;
-            btnAbout.Image = Properties.Resources.glyphicons_195_question_sign;
             btnAbout.Location = new Point(614, 57);
             btnAbout.Name = "btnAbout";
             btnAbout.Size = new Size(40, 38);
@@ -74,7 +72,6 @@ namespace AudioLab
             // btnKill
             // 
             btnKill.FlatStyle = FlatStyle.Flat;
-            btnKill.Image = Properties.Resources.glyphicons_206_electricity;
             btnKill.Location = new Point(522, 57);
             btnKill.Name = "btnKill";
             btnKill.Size = new Size(40, 38);
@@ -87,7 +84,6 @@ namespace AudioLab
             chkMonRecv.Appearance = Appearance.Button;
             chkMonRecv.FlatAppearance.CheckedBackColor = Color.PapayaWhip;
             chkMonRecv.FlatStyle = FlatStyle.Flat;
-            chkMonRecv.Image = Properties.Resources.glyphicons_213_arrow_down;
             chkMonRecv.Location = new Point(430, 57);
             chkMonRecv.Name = "chkMonRecv";
             chkMonRecv.Size = new Size(40, 38);
@@ -100,7 +96,6 @@ namespace AudioLab
             chkMonSend.Appearance = Appearance.Button;
             chkMonSend.FlatAppearance.CheckedBackColor = Color.PapayaWhip;
             chkMonSend.FlatStyle = FlatStyle.Flat;
-            chkMonSend.Image = Properties.Resources.glyphicons_214_arrow_up;
             chkMonSend.Location = new Point(476, 57);
             chkMonSend.Name = "chkMonSend";
             chkMonSend.Size = new Size(40, 38);
@@ -111,7 +106,6 @@ namespace AudioLab
             // btnSettings
             // 
             btnSettings.FlatStyle = FlatStyle.Flat;
-            btnSettings.Image = Properties.Resources.glyphicons_137_cogwheel;
             btnSettings.Location = new Point(568, 57);
             btnSettings.Name = "btnSettings";
             btnSettings.Size = new Size(40, 38);
@@ -132,20 +126,12 @@ namespace AudioLab
             // ddbtnFile
             // 
             ddbtnFile.FlatStyle = FlatStyle.Flat;
-            ddbtnFile.Image = Properties.Resources.glyphicons_37_file;
             ddbtnFile.Location = new Point(371, 59);
             ddbtnFile.Name = "ddbtnFile";
             ddbtnFile.Size = new Size(40, 38);
             ddbtnFile.TabIndex = 57;
             toolTip.SetToolTip(ddbtnFile, "Open new or recent script");
             ddbtnFile.UseVisualStyleBackColor = false;
-            // 
-            // masterControl1
-            // 
-            masterControl1.Location = new Point(12, 103);
-            masterControl1.Name = "masterControl1";
-            masterControl1.Size = new Size(911, 49);
-            masterControl1.TabIndex = 58;
             // 
             // menuStrip1
             // 
@@ -217,9 +203,10 @@ namespace AudioLab
             // 
             // channelControl1
             // 
+            channelControl1.BorderStyle = BorderStyle.FixedSingle;
             channelControl1.Location = new Point(13, 213);
             channelControl1.Name = "channelControl1";
-            channelControl1.Size = new Size(308, 58);
+            channelControl1.Size = new Size(273, 123);
             channelControl1.TabIndex = 61;
             // 
             // MainForm
@@ -229,7 +216,6 @@ namespace AudioLab
             ClientSize = new Size(1047, 556);
             Controls.Add(channelControl1);
             Controls.Add(toolStrip1);
-            Controls.Add(masterControl1);
             Controls.Add(ddbtnFile);
             Controls.Add(btnSettings);
             Controls.Add(timeBar);

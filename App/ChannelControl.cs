@@ -29,39 +29,15 @@ namespace AudioLab // Ephemera.MidiLib
         Controller = 0x02,  // controller select and send
         All = 0x0F,         // all of above
     }
-
-    /// <summary>Notify host of UI changes.</summary>
-    public class ChannelChangeEventArgs : EventArgs
-    {
-        /// <summary>User clicked info.</summary>
-        public bool Info { get; set; } = false;
-        /// <summary>Solo/mute.</summary>
-        public bool State { get; set; } = false;
-    }
     #endregion
 
     [DesignTimeVisible(true)]
-    public class ChannelControl : UserControl
+    public partial class ChannelControl : UserControl
     {
         #region Fields
         ChannelState _state = ChannelState.Normal;
         const int PAD = 4;
         const int SIZE = 42;
-
-        readonly Container components = new();
-        protected ToolTip toolTip = new();
-
-        // always:
-        readonly Label lblInfo = new();
-        readonly Slider sldVolume = new();
-
-        // optional:
-        readonly Label lblSolo = new();
-        readonly Label lblMute = new();
-
-        // optional:
-        readonly Slider sldControllerValue = new();
-        readonly Button btnSend = new();
 
         // backing:
  //>>>       UserRenderer? _userRenderer = null; // TODO1 this??
@@ -89,9 +65,9 @@ namespace AudioLab // Ephemera.MidiLib
         {
             get { return sldVolume.DrawColor; }
             set { sldVolume.DrawColor = value;
-                  sldControllerValue.DrawColor = value;
-                  btnSend.BackColor = value;
-                }
+                sldVolume.DrawColor = value;
+                lblInfo.BackColor = value;
+            }
         }
 
         /// <summary>Drawing the control when selected.</summary>
@@ -121,23 +97,23 @@ namespace AudioLab // Ephemera.MidiLib
             set { sldVolume.Value = value; }
         }
 
-        /// <summary>Edit current controller number.</summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int Controller
-        {
-            get { return _controller; }
-            set { if (value is < 0 or > MidiDefs.MAX_MIDI) throw new ArgumentOutOfRangeException($"Controller:{value}");
-                  else _controller = value; }
-        }
+        ///// <summary>Edit current controller number.</summary>
+        //[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        //public int Controller
+        //{
+        //    get { return _controller; }
+        //    set { if (value is < 0 or > MidiDefs.MAX_MIDI) throw new ArgumentOutOfRangeException($"Controller:{value}");
+        //          else _controller = value; }
+        //}
 
-        /// <summary>Controller payload.</summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int ControllerValue
-        {
-            get { return _controller; }
-            set { if (value is < 0 or > MidiDefs.MAX_MIDI) throw new ArgumentOutOfRangeException($"ControllerValue:{value}");
-                  else _controllerValue = value; }
-        }
+        ///// <summary>Controller payload.</summary>
+        //[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        //public int ControllerValue
+        //{
+        //    get { return _controller; }
+        //    set { if (value is < 0 or > MidiDefs.MAX_MIDI) throw new ArgumentOutOfRangeException($"ControllerValue:{value}");
+        //          else _controllerValue = value; }
+        //}
 
         /// <summary>User selection.</summary>
         public bool Selected
@@ -158,6 +134,8 @@ namespace AudioLab // Ephemera.MidiLib
         /// </summary>
         public ChannelControl()
         {
+            InitializeComponent();
+
             SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
 
             // Dummy channel to satisfy designer. Will be overwritten by the real one.
@@ -173,24 +151,24 @@ namespace AudioLab // Ephemera.MidiLib
         {
             SuspendLayout();
             
-            // Create the controls per the config.
-            int xPos = PAD;
-            int xMax = xPos;
-            int yPos = PAD;
-            int yMax = yPos;
+            //// Create the controls per the config.
+            //int xPos = PAD;
+            //int xMax = xPos;
+            //int yPos = PAD;
+            //int yMax = yPos;
 
             // The standard stuff.
             {
                 lblInfo.Anchor = AnchorStyles.Top | AnchorStyles.Left;
                 lblInfo.BorderStyle = BorderStyle.FixedSingle;
-                lblInfo.Location = new(xPos, yPos);
+                //lblInfo.Location = new(xPos, yPos);
                 lblInfo.Size = new(55, SIZE);
                 lblInfo.Click += ChannelInfo_Click;
                 Controls.Add(lblInfo);
 
-                xPos = lblInfo.Right + PAD;
-                xMax = xPos;
-                yMax = Math.Max(lblInfo.Bottom, yMax);
+                //xPos = lblInfo.Right + PAD;
+                //xMax = xPos;
+                //yMax = Math.Max(lblInfo.Bottom, yMax);
             }
 
             {
@@ -200,65 +178,65 @@ namespace AudioLab // Ephemera.MidiLib
                 sldVolume.Value = 1.0;
                 sldVolume.BorderStyle = BorderStyle.FixedSingle;
                 sldVolume.Orientation = Orientation.Horizontal;
-                sldVolume.Location = new(xPos, yPos);
+                //sldVolume.Location = new(xPos, yPos);
                 sldVolume.Size = new(80, SIZE);
                 sldVolume.Label = "volume";
                 sldVolume.ValueChanged += (sender, e) => BoundChannel.Volume = (sender as Slider)!.Value;
                 Controls.Add(sldVolume);
 
-                xPos = sldVolume.Right + PAD;
-                xMax = xPos;
-                yMax = Math.Max(sldVolume.Bottom, yMax);
+                //xPos = sldVolume.Right + PAD;
+                //xMax = xPos;
+                //yMax = Math.Max(sldVolume.Bottom, yMax);
             }
 
-            if (Options.HasFlag(DisplayOptions.SoloMute))
+            //if (Options.HasFlag(DisplayOptions.SoloMute))
             {
-                lblSolo.Location = new(xPos, yPos + 1);
+                //lblSolo.Location = new(xPos, yPos + 1);
                 lblSolo.Size = new(20, 20);
                 lblSolo.Text = "S";
                 lblSolo.Click += SoloMute_Click;
                 Controls.Add(lblSolo);
 
-                lblMute.Location = new(xPos, yPos  + SIZE / 2 + 1);
+                //lblMute.Location = new(xPos, yPos  + SIZE / 2 + 1);
                 lblMute.Size = new(20, 20);
                 lblMute.Text = "M";
                 lblMute.Click += SoloMute_Click;
                 Controls.Add(lblMute);
 
-                xPos = lblSolo.Right + PAD;
-                xMax = xPos;
-                yMax = Math.Max(lblMute.Bottom, yMax);
+                //xPos = lblSolo.Right + PAD;
+                //xMax = xPos;
+                //yMax = Math.Max(lblMute.Bottom, yMax);
             }
 
-            if (Options.HasFlag(DisplayOptions.Controller))
-            {
-                btnSend.FlatStyle = FlatStyle.Flat;
-                btnSend.UseVisualStyleBackColor = true;
-                btnSend.Location = new(xPos, yPos);
-                btnSend.Size = new(SIZE, SIZE);
-                btnSend.Text = "OPT";
-                btnSend.Click += Send_Click;
-                Controls.Add(btnSend);
+            //if (Options.HasFlag(DisplayOptions.Controller))
+            //{
+            //    btnSend.FlatStyle = FlatStyle.Flat;
+            //    btnSend.UseVisualStyleBackColor = true;
+            //    btnSend.Location = new(xPos, yPos);
+            //    btnSend.Size = new(SIZE, SIZE);
+            //    btnSend.Text = "OPT";
+            //    btnSend.Click += Send_Click;
+            //    Controls.Add(btnSend);
 
-                xPos = btnSend.Right + PAD;
-                yMax = Math.Max(btnSend.Bottom, yMax);
+            //    xPos = btnSend.Right + PAD;
+            //    yMax = Math.Max(btnSend.Bottom, yMax);
 
-                sldControllerValue.Minimum = 0;
-                sldControllerValue.Maximum = MidiDefs.MAX_MIDI;
-                sldControllerValue.Resolution = 1;
-                sldControllerValue.Value = 50;
-                sldControllerValue.BorderStyle = BorderStyle.FixedSingle;
-                sldControllerValue.Orientation = Orientation.Horizontal;
-                sldControllerValue.Location = new(xPos, yPos);
-                sldControllerValue.Size = new(80, SIZE);
-                sldControllerValue.Label = "value";
-                sldControllerValue.ValueChanged += Controller_ValueChanged;
-                Controls.Add(sldControllerValue);
+            //    sldControllerValue.Minimum = 0;
+            //    sldControllerValue.Maximum = MidiDefs.MAX_MIDI;
+            //    sldControllerValue.Resolution = 1;
+            //    sldControllerValue.Value = 50;
+            //    sldControllerValue.BorderStyle = BorderStyle.FixedSingle;
+            //    sldControllerValue.Orientation = Orientation.Horizontal;
+            //    sldControllerValue.Location = new(xPos, yPos);
+            //    sldControllerValue.Size = new(80, SIZE);
+            //    sldControllerValue.Label = "value";
+            //    sldControllerValue.ValueChanged += Controller_ValueChanged;
+            //    Controls.Add(sldControllerValue);
 
-                xPos = sldControllerValue.Right + PAD;
-                xMax = xPos;
-                yMax = Math.Max(sldControllerValue.Bottom, yMax);
-            }
+            //    xPos = sldControllerValue.Right + PAD;
+            //    xMax = xPos;
+            //    yMax = Math.Max(sldControllerValue.Bottom, yMax);
+            //}
 
             //if (_userRenderer is not null)
             //{
@@ -269,7 +247,7 @@ namespace AudioLab // Ephemera.MidiLib
             //}
 
             // Form itself.
-            Size = new Size(xMax + PAD, yMax + PAD);
+            //Size = new Size(xMax + PAD, yMax + PAD);
 
             ResumeLayout(false);
             PerformLayout();
@@ -347,16 +325,16 @@ namespace AudioLab // Ephemera.MidiLib
             ChannelChange?.Invoke(this, new() { State = true });
         }
 
-        /// <summary>
-        /// Notify client.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Controller_ValueChanged(object? sender, EventArgs e)
-        {
-            // No need to check limits.
-            ControllerValue = (int)(sender as Slider)!.Value;
-        }
+        ///// <summary>
+        ///// Notify client.
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //void Controller_ValueChanged(object? sender, EventArgs e)
+        //{
+        //    // No need to check limits.
+        //    ControllerValue = (int)(sender as Slider)!.Value;
+        //}
 
         /// <summary>
         /// Notify client.
@@ -394,5 +372,15 @@ namespace AudioLab // Ephemera.MidiLib
             return "TODO ZZZ"; // $"{HandleOps.Format(BoundChannel.Handle)}";
         }
         #endregion
+    }
+
+
+    /// <summary>Notify host of UI changes.</summary>
+    public class ChannelChangeEventArgs : EventArgs
+    {
+        /// <summary>User clicked info.</summary>
+        public bool Info { get; set; } = false;
+        /// <summary>Solo/mute.</summary>
+        public bool State { get; set; } = false;
     }
 }
