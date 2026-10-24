@@ -1,0 +1,86 @@
+
+- Mine:
+C:\Dev\Libs\AudioLib\AudioCommon.cs:
+   27:     public interface IConverterOps
+
+C:\Dev\Libs\MidiLib\IDevice.cs:
+   10:     public interface IDevice : IDisposable
+   25:     public interface IInputDevice : IDevice
+   39:     public interface IOutputDevice : IDevice
+
+
+- NAudio:
+C:\Dev\Third\NAudio3\src\NAudio.Core\Effects\IAudioEffect.cs:
+   14: public interface IAudioEffect
+C:\Dev\Third\NAudio3\src\NAudio.Core\Effects\IParameterDispatch.cs:
+   12: public interface IParameterDispatch
+C:\Dev\Third\NAudio3\src\NAudio.Core\Effects\IParameterized.cs:
+   14: public interface IParameterized
+
+C:\Dev\Third\NAudio3\src\NAudio.Core\FileFormats\Mp3\IMp3FrameDecompressor.cs:
+    9: public interface IMp3FrameDecompressor : IDisposable
+C:\Dev\Third\NAudio3\src\NAudio.Core\FileFormats\Sfz\ISfzIncludeResolver.cs:
+   10: public interface ISfzIncludeResolver
+
+C:\Dev\Third\NAudio3\src\NAudio.Core\Sequencing\IPositionTransform.cs:
+    9: public interface IPositionTransform
+C:\Dev\Third\NAudio3\src\NAudio.Core\Sequencing\ITempoMap.cs:
+    8: public interface ITempoMap
+
+C:\Dev\Third\NAudio3\src\NAudio.Core\Wave\SampleProviders\PanningSampleProvider.cs:
+  121: public interface IPanStrategy
+C:\Dev\Third\NAudio3\src\NAudio.Core\Wave\WaveInputs\IWaveIn.cs:
+    9: public interface IWaveIn : IDisposable
+C:\Dev\Third\NAudio3\src\NAudio.Core\Wave\WaveOutputs\ISampleProvider.cs:
+    9: public interface ISampleProvider
+C:\Dev\Third\NAudio3\src\NAudio.Core\Wave\WaveOutputs\IWaveBuffer.cs:
+   18: public interface IWaveBuffer
+C:\Dev\Third\NAudio3\src\NAudio.Core\Wave\WaveOutputs\IWavePlayer.cs:
+    9: public interface IWavePlayer : IDisposable
+   59: public interface IWavePosition
+  107: public interface IWaveLatency
+C:\Dev\Third\NAudio3\src\NAudio.Core\Wave\WaveOutputs\IWaveProvider.cs:
+    8: public interface IWaveProvider
+C:\Dev\Third\NAudio3\src\NAudio.Core\Wave\WaveOutputs\WaveFileWriter.cs:
+   26: public interface IWaveChunkWriter
+
+C:\Dev\Third\NAudio3\src\NAudio.Core\Wave\WaveStreams\ISampleNotifier.cs:
+    9: public interface ISampleNotifier
+C:\Dev\Third\NAudio3\src\NAudio.Core\Wave\WaveStreams\IWaveChunkInterpreter.cs:
+   10: public interface IWaveChunkInterpreter<out T>
+
+C:\Dev\Third\NAudio3\src\NAudio.Dmo\Dmo\Effect\IDmoEffector.cs:
+    9: public interface IDmoEffector<out TParameters> : IDisposable
+
+C:\Dev\Third\NAudio3\src\NAudio.Midi\Midi\IMidiInput.cs:
+   10: public interface IMidiInput : IDisposable
+C:\Dev\Third\NAudio3\src\NAudio.Midi\Midi\IMidiInstrument.cs:
+   23: public interface IMidiInstrument : ISampleProvider
+C:\Dev\Third\NAudio3\src\NAudio.Midi\Midi\IMidiOutput.cs:
+   10: public interface IMidiOutput : IDisposable
+
+C:\Dev\Third\NAudio3\src\NAudio.Sampler\ISfzSampleLoader.cs:
+   12: public interface ISfzSampleLoader
+
+C:\Dev\Third\NAudio3\src\NAudio.Wasapi\CoreAudioApi\Interfaces\IAudioSessionEventsHandler.cs:
+    8: public interface IAudioSessionEventsHandler
+
+
+- NAudio example:
+C:\Dev\Third\NAudio3\samples\AudioFileInspector\IAudioFileInspector.cs:
+    3: public interface IAudioFileInspector
+
+C:\Dev\Third\NAudio3\samples\NAudioConsoleTest\Shared\Testing\IConsoleTest.cs:
+    8: public interface IConsoleTest
+
+C:\Dev\Third\NAudio3\samples\NAudioDemo\INAudioDemoPlugin.cs:
+    5: public interface INAudioDemoPlugin
+
+C:\Dev\Third\NAudio3\samples\NAudioDemo\AudioPlaybackDemo\IOutputDevicePlugin.cs:
+    6: public interface IOutputDevicePlugin
+
+C:\Dev\Third\NAudio3\samples\NAudioDemo\NetworkChatDemo\INetworkChatCodec.cs:
+    6: public interface INetworkChatCodec : IDisposable
+
+C:\Dev\Third\NAudio3\samples\NAudioWpfDemo\IModule.cs:
+    5: public interface IModule

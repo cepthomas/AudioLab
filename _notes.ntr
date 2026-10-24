@@ -1,6 +1,7 @@
 
 # Top
 
+# what are these?
 
 https://www.imaginando.pt/products/lk-ableton-live-and-midi-controller
 
@@ -16,6 +17,147 @@ Sixteen tracks, eleven sound engines and eleven effects, standalone or as a plug
 
 https://aura.town/
 https://github.com/AuraTown
+
+# naudio 3
+
+https://www.reddit.com/r/dotnet/comments/1n0lf5s/microsoftwindowssdknetdll_doubling_the_size_of/
+A common complaint on developer forums like Reddit's .NET Community is that Microsoft.Windows.SDK.NET.dll can significantly bloat application size (often adding 20MB to 40MB or more to the build output). This occurs because it contains the C# definitions for every available WinRT API in the OS.The Fix: To minimize this overhead, ensure that IL Trimming (<PublishTrimmed>true</PublishTrimmed>) is enabled in your .csproj file when publishing your application. Trimming strips out the unused WinRT mappings, reducing the final footprint of the DLL to only what your application actually calls.
+
+mark.heath@gmail.com
+
+Overview: https://markheath.net/post/2026/8/15/naudio-3-release
+Doc: https://naudio.github.io/NAudio/api/NAudio.html
+Code: https://github.com/naudio/NAudio
+Migrate: https://naudio.github.io/NAudio/docs/MigratingFromNAudio2.html
+Tut: https://naudio.github.io/NAudio/docs/MigratingFromNAudio2.html
+
+
+# Maybe later
+
+? NAudio3 has a MusicTime -> NAudio.Core\Sequencing\BarBeatTick.cs
+
+? WinRT MIDI is a modern Windows API framework (Windows.Devices.Midi) that replaces legacy Win32 MIDI drivers, bringing native Bluetooth MIDI support, multi-client capabilities, and better plug-and-play device handling to applications.
+
+MidiIn, MidiOut, MidiInCapabilities and MidiOutCapabilities moved from NAudio.Midi to NAudio.WinMM. NAudio.Midi is now cross-platform — its net9.0 target no longer P/Invokes winmm.dll. If you use the classic Windows MIDI I/O classes, add a reference to NAudio.WinMM (the NAudio meta-package already includes it).
+
+MmResult, MmException and Manufacturers moved from NAudio.Core to NAudio.WinMM.
+
+MidiInMessageEventArgs.Timestamp / MidiInSysexMessageEventArgs.Timestamp are now TimeSpan (previously int milliseconds), preserving the WinRT 100 ns resolution.
+
+MidiIn.CreateSysexBuffers was removed — MidiIn now allocates sysex receive buffers automatically inside Start().
+
+New (non-breaking) additions worth knowing about: WinRT WinRTMidiIn / WinRTMidiOut in NAudio.Midi (Windows build), the backend-agnostic IMidiInput / IMidiOutput interfaces, and the IMidiInstrument MIDI-file → audio pipeline.
+DMO and Direct
+
+? SoundFile. Needs libsndfile. https://naudio.github.io/NAudio/docs/CrossPlatformAudioFilesWithSoundFile.html
+mainly NAudioConsoleTest
+and NAudioWpfDemo\SampleEditorDemo\SampleEditorViewModel.cs:
+
+? NAudioConsoleTest. Maybe strip some. Uses fancy console: Spectre.Console.
+  also other tests: C:\Dev\Third\NAudio3\tests
+
+? NAudio.Extras
+
+# VST
+
+- **Plug-in discovery** — `Vst3PluginScanner` enumerates the VST 3 modules installed in the standard search paths (`EnumerateInstalled()`) or in a folder you choose (`EnumerateIn`)
+- **Plug-in hosting** — `Vst3Plugin` loads a `.vst3` module, processes audio, exposes latency/tail info, parameters, units and program lists, and saves/loads state and `.vstpreset` files
+- **Audio integration** — `Vst3EffectSampleProvider` runs an effect plug-in inside an NAudio `ISampleProvider` chain; `Vst3InstrumentSampleProvider` and `Vst3MidiInstrument` drive an instrument plug-in from MIDI
+- **Parameters & presets** — `Vst3ParameterCollection`, `Vst3Parameter`, `Vst3Unit`, `Vst3ProgramList` and `Vst3PresetContents` for automation and preset management
+- **Editor UI** — `Vst3PluginView` for hosting a plug-in's native editor window
+
+
+- vst locations: NAudioWpfDemo\Vst3Shared\Vst3InstalledPlugins.cs
+private static IReadOnlyList<string> ComputeDefaultSearchPaths()
+{
+    return new[]
+    {
+        System.IO.Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles),
+            "VST3"),
+        System.IO.Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Programs", "Common", "VST3"),
+    };
+}
+
+
+- VST2 support?
+https://www.kvraudio.com/forum/viewtopic.php?t=565924
+https://github.com/DISTRHO/Ildaeil
+https://kushview.net/element/
+First one is simplest. Drop into VST3 folder, scan VST3 folder with your VST2 host. If you want to break the shell into individual plugins, read the 2nd page.
+Second one supports most formats (clap, vst2, vst3, lv2, jsfx)
+Third one is the least technical. 
+
+- Convert?
+Blue cat patchwork
+* https://adammonroemusic.com/blog/porting_vst2_plugins_to_vst3.html
+Kasen Sansonetti  https://www.facebook.com/groups/abletonliveusers/posts/9841583862618489/
+my VST2 src in "C:\Users\cepth\OneDrive\Attic\Old\VstServer.zip"
+
+? other dev
+https://github.com/johnmanjohnston/dawception/
+https://juce.com/
+
+
+# migrate from NAudio2 -> 3
+
+- Re-target to net9.0 (or later).
+- WaveOutEvent is now called WaveOut, and WaveInEvent is now WaveIn. The old names still work as [Obsolete] - subclasses, so this is a warning, not a break.
+- WaveOut.DesiredLatency is gone — use BufferMilliseconds, which sizes each individual buffer rather than the - total across all of them.
+- Custom IWaveProvider / ISampleProvider implementations need their Read override changed to take a single Span<T>.
+- WasapiOut / WasapiCapture / WasapiLoopbackCapture are [Obsolete] in favour of WasapiPlayer / WasapiRecorder. They still ship and still work.
+
+- This is the change most likely to affect custom code.
+    IWaveProvider.Read(byte[] buffer, int offset, int count) is now Read(Span<byte> buffer).
+    ISampleProvider.Read(float[] buffer, int offset, int count) is now Read(Span<float> buffer).
+Calling a provider:
+    // before
+    int read = source.Read(buffer, offset, count);
+    // after
+    int read = source.Read(buffer.AsSpan(offset, count));
+Implementing a provider — change the override and index from the start of the span:
+    // before
+    public int Read(byte[] buffer, int offset, int count) { ... buffer[offset + i] ... }
+    // after
+    public int Read(Span<byte> buffer) { ... buffer[i] ... }
+
+- DesiredLatency is replaced by BufferMilliseconds. This is a compile break with no shim, and the meaning changed: DesiredLatency was the total across all buffers, whereas BufferMilliseconds (default 100) sizes each individual buffer. With the default NumberOfBuffers = 2, DesiredLatency = 300 becomes BufferMilliseconds = 150.
+    // before
+    var player = new WaveOutEvent { DesiredLatency = 300, NumberOfBuffers = 2 };
+    // after
+    var player = new WaveOut { BufferMilliseconds = 150, NumberOfBuffers = 2 };
+
+- These not pulled in by the NAudio meta-package — reference explicitly:
+dotnet add package NAudio.SoundFile
+dotnet add package NAudio.Vst3
+dotnet add package NAudio.Sampler
+- or easier, edit project files:
+<ItemGroup>
+    <PackageReference Include="NAudio" Version="3.1.0" />
+    <PackageReference Include="NAudio.SoundFile" Version="3.1.0" />
+    <PackageReference Include="NAudio.Vst3" Version="3.1.0" />
+    <PackageReference Include="NAudio.Sampler" Version="3.1.0" />
+</ItemGroup>
+
+- NAudioWpfDemo_XXX
+  - Removed *MediaFoundation projects.
+
+- AudioFileInspector_XXX
+  added suppress ;WFO1000 in old WinForms projects.
+
+! If you target net9.0-windows you don't get access to any of the new SDKs that ships in Win10 and beyond. Instead you have to use these crazy SDK numbers like net9.0-windows10.0.19041.0 to get access to any basic Windows APIs.
+  -> <TargetFrameworks>net9.0-windows10.0.19041.0</TargetFrameworks>
+    which sucks in the giant SDK assembly
+    uses WinRTMidiIn, using Windows.Devices, 
+  or .net10/VS2026
+
+? NAudio.WinMM
+
+# end
+
+
 
 # end
 

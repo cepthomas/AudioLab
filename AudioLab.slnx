@@ -1,5 +1,6 @@
 <Solution>
-  <!-- <Project Path="../../Libs/AudioLib/AudioLib.csproj" /> -->
-  <!-- <Project Path="../../Libs/MidiLib/MidiLib.csproj" /> -->
-  <Project Path="AudioLab.csproj" />
+  <Project Path="App/App.csproj" />
+  <Project Path="N3_common/N3_common.csproj" />
+  <Project Path="N3_demo/N3_demo.csproj" />
+  <Project Path="N3_vst/N3_vst.csproj" />
 </Solution>
