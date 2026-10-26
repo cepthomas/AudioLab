@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-//using System.Windows.Threading;
 using NAudio.Wave;
 
 namespace N3_common;
@@ -18,7 +17,10 @@ public static class SamplerPlayback
     {
         void Stopped(object sender, StoppedEventArgs e)
         {
-            if (e.Exception != null) RaiseOnUi(() => onError?.Invoke(e.Exception));
+            if (e.Exception != null)
+            {
+                RaiseOnUi(() => onError?.Invoke(e.Exception));
+            }
         }
 
         try

@@ -11,7 +11,6 @@ using System.Windows.Forms;
 using Ephemera.NBagOfTricks;
 using Ephemera.NBagOfUis;
 
-// TODO1 needs pan.
 
 
 namespace AudioLab // Ephemera.MidiLib

@@ -8,12 +8,14 @@ namespace N3_common;
 public class DelegateCommand : ICommand
 {
     private readonly Action action;
-    private bool isEnabled;
+
+    public event EventHandler CanExecuteChanged;
+    public bool IsEnabled { get; set; }
 
     public DelegateCommand(Action action)
     {
         this.action = action;
-        isEnabled = true;
+        IsEnabled = true;
     }
 
     public void Execute(object parameter)
@@ -23,26 +25,8 @@ public class DelegateCommand : ICommand
 
     public bool CanExecute(object parameter)
     {
-        return isEnabled;
+        return IsEnabled;
     }
-
-    public bool IsEnabled
-    {
-        get
-        {
-            return isEnabled;
-        }
-        set
-        {
-            if (isEnabled != value)
-            {
-                isEnabled = value;
-                OnCanExecuteChanged();
-            }
-        }
-    }
-
-    public event EventHandler CanExecuteChanged;
 
     protected virtual void OnCanExecuteChanged()
     {

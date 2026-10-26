@@ -2,7 +2,7 @@
 -- An example Nebulua composition file.
 
 
--- Import modules this needs. --*** Fewer requires - maybe not modules, just functions?
+-- Import modules this needs.
 local api = require("script_api")
 local mus = require("music_defs")
 local def = require("defs_api")
@@ -12,15 +12,16 @@ local ut  = require("lbot_utils")
 local sx  = require("stringex")
 
 
--- Aliases for imports - less typing. --*** integrate with above
+-- Aliases for imports - less typing.
 local inst = mid.instruments
 local drum = mid.drums
 local kit  = mid.drum_kits
 local ctrl = mid.controllers
 
 -- Say hello.
-api.log_info('Loading example.lua...') --*** less verbose
-print('=======??????=========')
+api.log_info('Loading example.lua...')
+
+print('================')
 
 ------------------------- Configuration -------------------------------
 
@@ -29,7 +30,7 @@ local midi_device_in  = "NebLoopback1"
 local hnd_ccin  = api.open_input_channel(midi_device_in, 1, "my input")
 
 local midi_device_out = "Microsoft GS Wavetable Synth"  -- or "VirtualMIDISynth #1" or "NebLoopback1" for VST host
-local hnd_keys    = api.open_output_channel(midi_device_out, 1,  "keys",       inst.AcousticGrandPiano) --*** patch?
+local hnd_keys    = api.open_output_channel(midi_device_out, 1,  "keys",       inst.AcousticGrandPiano)
 local hnd_bass    = api.open_output_channel(midi_device_out, 2,  "bass",       inst.AcousticBass)
 local hnd_synth   = api.open_output_channel(midi_device_out, 3,  "synth",      inst.Lead1Square)
 local hnd_strings = api.open_output_channel(midi_device_out, 4,  "pan flute",  inst.StringEnsemble1)
@@ -70,7 +71,7 @@ function setup()
     -- How fast?
     api.set_tempo(88)
 
-    -- Set master volumes.
+    -- Set master volumes. XXX could be in Configuration
     api.set_volume(hnd_keys, 0.7)
     api.set_volume(hnd_bass, 0.9)
     api.set_volume(hnd_synth, 0.6)
@@ -82,12 +83,12 @@ function setup()
 end
 
 -----------------------------------------------------------------------------
--- Main work loop called every tick. Required. --*** midi only
+-- Main work loop called every tick. Required.
 function step(tick)
     -- Overhead.
     api.process_step(tick)
 
-    -- Other work you may want to do. Like do something every new bar.
+    -- Other work you may want to do. Like do something every new bar. XXX pattern matching?
         local bar, beat, sub = mt.tick_to_mt(tick)
         if beat == 2 and sub == 0 then
             -- api.send_midi_controller(hnd_synth, ctrl.Pan, 90)
@@ -100,7 +101,7 @@ end
 ---------------------------------------------------------------------------
 -- Handler for input note events. Optional.
 function receive_midi_note(chan_hnd, note_num, volume)
-    if chan_hnd == hnd_ccin then
+    if chan_hnd == hnd_ccin then -- XXX pattern matching?
         -- Play the note.
         -- api.log_debug(string.format("RCV hnd_ccin note:%d chan_hnd:%d volume:%f", note_num, chan_hnd, volume))
         api.send_note(hnd_strings, note_num, volume)--, 0)
@@ -111,7 +112,7 @@ end
 ---------------------------------------------------------------------------
 -- Handlers for input controller events. Optional.
 function receive_midi_controller(chan_hnd, controller, value)
-    if chan_hnd == hnd_ccin then
+    if chan_hnd == hnd_ccin then -- XXX pattern matching?
         api.log_debug(string.format("RCV controller:%d chan_hnd:%d value:%d", controller, chan_hnd, value))
         -- Do something.
     end
@@ -129,6 +130,13 @@ _algo_func = function(tick)
         api.send_note(hnd_synth, my_scale[note_num], 0.8, 3)
     end
 end
+
+---------------------------------------------------------------------------
+------------------------- Composition new ---------------------------------
+---------------------------------------------------------------------------
+
+
+
 
 ---------------------------------------------------------------------------
 ------------------------- Composition -------------------------------------
@@ -198,8 +206,19 @@ local bass_chorus =
     { "|5   8   |        |5   8   |        |5   8   |        |5   8   |        |", "C2" },
 }
 
+-- each sequence:  = 2 bars = 64 ticks
+-- | beat 0 | beat 1 | beat 2 | beat 3 | beat 4 | beat 5 | beat 6 | beat 7 |
+-- |........|........|........|........|........|........|........|........|
 
--- Sections -- each section is 8 bars
+
+-- total:
+-- beginning,0  middle,256  ending,512  _LENGTH,768
+-- beginning,0.0.0  middle,8.0.0  ending,16.0.0  _LENGTH,24.0.0
+
+-- 256 ticks = 32 beats = 8 bars
+
+
+-- Sections -- each section is 8 bars = 256 ticks
 --                       0             2             4             6
 api.sect_start("beginning")
 api.sect_chan(hnd_keys,  keys_verse,   keys_verse,   keys_verse,   keys_verse)
