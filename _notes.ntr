@@ -2,47 +2,33 @@
 # Top
 
 
-
 # TODO1
 
 ? remove all ui from MidiLib?
-    - Windows.Forms: ChannelControl, TimeBar, TypeEditors, UserRenderer
+    - Windows.Forms: ChannelControl, TimeBar, TypeEditors(just MidiValueTypeEditor), UserRenderer
 
     - ChannelControl
-        - needs pan.
-        C:\Dev\Libs\MidiLib\ChannelControl.cs:
-        C:\Dev\Libs\MidiLib\README.md:
-        C:\Dev\Libs\MidiLib\Test\MainForm.cs:
-        C:\Dev\Libs\MidiLib\Test\MainForm.Designer.cs:
-        - usage: Midifrier, MidiGenerator, Nebulator\App, Nebulua,
-        ? remove UserRenderer? MidiGenerator\ClickClack.cs, VirtualKeyboard.cs:
+        - impl: ChannelControl.cs, README.md, Test\MainForm.cs, Test\MainForm.Designer.cs
+        - usage: Midifrier, MidiGenerator, Nebulator, Nebulua
+        - add pan.
+        ? remove UserRenderer? base class for ClickClack, VirtualKeyboard
 
-    - public class TimeBar : UserControl
-        C:\Dev\Apps\Nebulator\App\MainForm.cs:
-        C:\Dev\Apps\Nebulator\App\MainForm.Designer.cs:
-
-        C:\Dev\Apps\Nebulua\MainForm.cs:
-        C:\Dev\Apps\Nebulua\MainForm.Designer.cs:
-
-        C:\Dev\Libs\MidiLib\README.md:
-        C:\Dev\Libs\MidiLib\Test\MainForm.cs:
-        C:\Dev\Libs\MidiLib\Test\MainForm.Designer.cs:
-        C:\Dev\Libs\MidiLib\TimeBar.cs:
+    - TimeBar
+        - usage: Nebulator, Nebulua
+        - impl: README.md, Test\MainForm.cs, Test\MainForm.Designer.cs, TimeBar.cs,
 
 ? remove all ui from AudioLib?
-    - Windows.Forms: ProgressBar, ToolStripParamEditor, WaveViewer
     - usage: Wavicler, ClipPlayer
-    - reconcile two ProgressBar - AudioLib (only used in Wavicler), Midifrier
-        ? merge with TimeBar
+    - using Windows.Forms: ProgressBar, WaveViewer+ToolStripParamEditor
+    ! reconcile two ProgressBar - AudioLib(only used in Wavicler), Midifrier
+        ? merge with MidiLib.TimeBar
     ? WaveViewer - only used in Wavicler
     - BarOps.cs is a lot like MidiLib MusicTime
-    - ToolStripParamEditor only used in WaveViewer.cs
 
-# controls
+# controls - current
 
 C:\Dev\Apps\Midifrier\ProgressBar.cs:
    19:     public class ProgressBar : UserControl
-
 C:\Dev\Libs\AudioLib\ProgressBar.cs:
    13:     public partial class ProgressBar : UserControl
 
@@ -54,12 +40,21 @@ C:\Dev\Libs\AudioLib\WaveViewer.cs:
 
 C:\Dev\Libs\MidiLib\ChannelControl.cs:
    42:     public class ChannelControl : UserControl
-
 C:\Dev\Libs\MidiLib\TimeBar.cs:
    20:     public class TimeBar : UserControl
-
 C:\Dev\Libs\MidiLib\UserRenderer.cs:
    13:     public class UserRenderer : UserControl
+
+# controls - new
+
+- ChannelControl - handles M and A. Include UserRenderer(interface?)
+- TimeBar - M
+- ProgressBarX2 - A  combine, rename
+
+? ClipEditor
+? WaveViewer+ToolStripParamEditor
+? BarOps.cs is a lot like MidiLib MusicTime
+
 
 
 # CLIENT-UI
@@ -298,7 +293,7 @@ https://github.com/DISTRHO/Ildaeil
 https://kushview.net/element/
 First one is simplest. Drop into VST3 folder, scan VST3 folder with your VST2 host. If you want to break the shell into individual plugins, read the 2nd page.
 Second one supports most formats (clap, vst2, vst3, lv2, jsfx)
-Third one is the least technical. 
+Third one is the least technical.
 
 - Convert?
 Blue cat patchwork
@@ -360,7 +355,7 @@ dotnet add package NAudio.Sampler
 ! If you target net9.0-windows you don't get access to any of the new SDKs that ships in Win10 and beyond. Instead you have to use these crazy SDK numbers like net9.0-windows10.0.19041.0 to get access to any basic Windows APIs.
   -> <TargetFrameworks>net9.0-windows10.0.19041.0</TargetFrameworks>
     which sucks in the giant SDK assembly
-    uses WinRTMidiIn, using Windows.Devices, 
+    uses WinRTMidiIn, using Windows.Devices,
   or .net10/VS2026
 
 ? NAudio.WinMM
