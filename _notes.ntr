@@ -11,8 +11,8 @@
         - impl: ChannelControl.cs, README.md, Test\MainForm.cs, Test\MainForm.Designer.cs
         - usage: Midifrier, MidiGenerator, Nebulator, Nebulua
         - add pan.
-        ? remove UserRenderer? base class for ClickClack, VirtualKeyboard
-
+        - put UserRenderer.cs in file. usage: ClickClack, VirtualKeyboard
+ 
     - TimeBar
         - usage: Nebulator, Nebulua
         - impl: README.md, Test\MainForm.cs, Test\MainForm.Designer.cs, TimeBar.cs,
@@ -20,17 +20,14 @@
 ? remove all ui from AudioLib?
     - usage: Wavicler, ClipPlayer
     - using Windows.Forms: ProgressBar, WaveViewer+ToolStripParamEditor
-    ! reconcile two ProgressBar - AudioLib(only used in Wavicler), Midifrier
-        ? merge with MidiLib.TimeBar
+    ! two ProgressBar ctrl:
+        - ProgressBar#1 - AudioLib(only used in Wavicler)
+        - ProgressBar#2 - Midifrier  ? merge with MidiLib.TimeBar
     ? WaveViewer - only used in Wavicler
     - BarOps.cs is a lot like MidiLib MusicTime
 
 # controls - current
 
-C:\Dev\Apps\Midifrier\ProgressBar.cs:
-   19:     public class ProgressBar : UserControl
-C:\Dev\Libs\AudioLib\ProgressBar.cs:
-   13:     public partial class ProgressBar : UserControl
 
 C:\Dev\Apps\Wavicler\ClipEditor.cs:
    22:     public partial class ClipEditor : UserControl
@@ -38,22 +35,28 @@ C:\Dev\Apps\Wavicler\ClipEditor.cs:
 C:\Dev\Libs\AudioLib\WaveViewer.cs:
    16:     public partial class WaveViewer : UserControl
 
-C:\Dev\Libs\MidiLib\ChannelControl.cs:
+C:\Dev\Libs\MidiLib\ChannelControl.cs: ++ UserRenderer.cs
    42:     public class ChannelControl : UserControl
+
 C:\Dev\Libs\MidiLib\TimeBar.cs:
    20:     public class TimeBar : UserControl
-C:\Dev\Libs\MidiLib\UserRenderer.cs:
-   13:     public class UserRenderer : UserControl
+
 
 # controls - new
 
-- ChannelControl - handles M and A. Include UserRenderer(interface?)
-- TimeBar - M
-- ProgressBarX2 - A  combine, rename
+- Common:
+    - ChannelControl - handles M and A. Include UserRenderer(interface?)
+    - Channel or interface
+- TimeBar - M  rename=>
+- ProgressBar X2 clean up, rename=>
+    C:\Dev\Libs\AudioLib\ProgressBar.cs: #1 A
+    C:\Dev\Apps\Midifrier\ProgressBar.cs: #2 M
 
+- Wavicler has:
 ? ClipEditor
 ? WaveViewer+ToolStripParamEditor
-? BarOps.cs is a lot like MidiLib MusicTime
+
+? BarOps.cs is a lot like MidiLib MusicTime - also SampleOps.cs and TimeOps.cs
 
 
 

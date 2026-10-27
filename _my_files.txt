@@ -1,100 +1,133 @@
+
 C:\Dev\Libs =================================================================================
-+---AudioLib
-|   |   AudioCommon.cs (3k)
-|   |   AudioFileInfo.cs (7k)
-|   |   AudioPlayer.cs (4k)
-|   |   AudioSettings.cs (2k)
-|   |   BarOps.cs (4k)
-|   |   ClipSampleProvider.cs (6k)
-|   |   NAudioEx.cs (9k)
-|   |   NullSampleProvider.cs (525b)
-|   |   PeakProvider.cs (2k)
-|   |   ProgressBar.cs (8k)
-|   |   SampleOps.cs (1k)
-|   |   SwappableSampleProvider.cs (2k)
-|   |   TimeOps.cs (4k)
-|   |   ToolStripParamEditor.cs (3k)
-|   |   WaveViewer.cs (29k)
-|   \---Test
-|           TestHost.cs (17k)
-+---IconicSelector !!!!
-+---LuaInterop ????
-+---MidiLib
-|   |   Channel.cs (10k)
-|   |   ChannelControl.cs (13k)
-|   |   Common.cs (2k)
-|   |   Events.cs (9k)
-|   |   gm_defs.ini (4k)
-|   |   IDevice.cs (1k)
-|   |   MidiDefs.cs (5k)
-|   |   MidiDevice.cs (6k)
-|   |   MidiManager.cs (10k)
-|   |   MusicTime.cs (8k)
-|   |   NullDevice.cs (3k)
-|   |   OscDevice.cs (9k)
-|   |   TimeBar.cs (16k)
-|   |   TypeEditors.cs (1k)
-|   |   UserRenderer.cs (777b)
-|   \---Test
-|           CustomRenderer.cs (5k)
-|           MainForm.cs (14k)
-|           MockNAudio.cs (5k)
-+---MusicLib ????
-+---NBagOfTricks -- as needed
-+---NBagOfUis -- as needed
-|   |   ChoiceSelector.cs (1k)
-|   |   ClickGrid.cs (7k)
-|   |   DropDownButton.cs (2k)
-|   |   FilTree.cs (13k)
-|   |   GraphicsUtils.cs (7k)
-|   |   Meter.cs (10k)
-|   |   OptionsEditor.cs (7k)
-|   |   Pan.cs (5k)
-|   |   Pot.cs (8k)
-|   |   PropertyGridEx.cs (7k)
-|   |   SettingsEditor.cs (2k)
-|   |   Slider.cs (10k)
-|   |   TextViewer.cs (6k)
-|   |   TypeEditors.cs (8k)
-|   |   WaitCursor.cs (716b)
-|   \---Test
-|          TestHost.cs (11k)
-+---NebOsc ????
-+---NStateMachine -- as needed
+
+C:\Dev\Libs\MidiLib
+XXX   Channel.cs (10k) ****
+XXX   ChannelControl.cs (13k) ****
+|   Common.cs (2k)
+|   Events.cs (9k)
+|   gm_defs.ini (4k)
+|   IDevice.cs (1k) ****
+|   MidiDefs.cs (5k)
+|   MidiDevice.cs (6k)
+|   MidiManager.cs (10k)
+|   NullDevice.cs (3k)
+|   OscDevice.cs (9k)
+|   TimeBar.cs (16k)
+|   TypeEditors.cs (1k) ****
+XXX   UserRenderer.cs (620b) ****
+
+>>> these
+|   MusicTime.cs (9k) ****
+
+\---Test
+
+
+C:\Dev\Libs\AudioLib
+|   Common.cs (3k)
+|   AudioFileInfo.cs (6k)
+|   AudioPlayer.cs (4k)
+|   AudioSettings.cs (2k)
+|   ClipSampleProvider.cs (6k)
+|   NAudioEx.cs (9k) **** remove anything impl in N3
+|   NullSampleProvider.cs (525b)
+|   PeakProvider.cs (2k)
+|   SwappableSampleProvider.cs (2k)
+|   SavingWaveProvider.cs (1k)
+
+|   >>> add ChannelControl.cs (13k)
+|   >>> add Channel.cs (10k)
+
+>>> Wavicler\ClipEditor only:
+|   ToolStripParamEditor.cs (3k) ****
+|   WaveViewer.cs (29k) ****
+
+>>> these
+|   BarOps.cs (4k) ****  audio flavor of MusicTime
+|   SampleOps.cs (1k) ****  IConverterOps
+|   TimeOps.cs (4k) ****  IConverterOps
+
+XXX   ProgressBar.cs (8k) ****  rename TimeBar
+
+\---Test
+
+
+C:\Dev\Libs\MusicLib
+|   music_defs.ini (7k)
+|   MusicDefs.cs (13k)
+\---Test
+
+As needed for app ============================================================================
++---NebOsc
++---IconicSelector
++---LuaInterop
++---NStateMachine
 
 
 
 C:\Dev\Apps ============================================================================
-+---ClipPlayer
++---Nebulua >>> target
+|   |   MainForm.cs (34k)
+|   +---Interop
+|   +---LBOT
+|   +---lua
++---ClipPlayer >>> standalone utility for Open with...
 |   |   AudioClipPlayer.cs (5k)
 |   |   Ipc.cs (13k)
 |   |   MidiClipPlayer.cs (9k)
 |   |   NullPlayer.cs (1k)
 |   |   Transport.cs (14k) -- control
-+---Midifrier
++---Midifrier >>> higher level midi file editing
 |   |   Export.cs (13k)
 |   |   MainForm.cs (32k)
 |   |   MidiDataFile.cs (17k)
-|   |   ProgressBar.cs (7k)
+|   |   ProgressBar.cs (7k) **** merge/use MidiLib.TimeBar
 |   |   Track.cs (3k)
-+---MidiGenerator
++---MidiGenerator >>> gp ui midi gen - could be absorbed in target or...
 |   |   ClickClack.cs (7k) -- control
 |   |   MainForm.cs (7k)
 |   |   VirtualKeyboard.cs (14k) -- control
-+---Nebulua
-|   |   MainForm.cs (34k)
-|   +---Interop
-|   +---LBOT
-|   +---lua
-+---SoundSuck ????
-+---Wavicler
++---Wavicler ****
 |   |   ClipEditor.cs (5k) -- control
 |   |   MainForm.cs (29k)
++---Nebulator ???
 
 
 
-C:\Dev\Misc ======================================================================
-+---NLab
-|   |   MockStream.cs (3k)
-|   |   SavingWaveProvider.cs (1k)
-+---TestAudioFiles -- !!!!
+? C:\Dev\Misc\NLab\MockStream.cs (3k)
+
+
+
+
+C:\Dev\Apps\ClipPlayer\ClipPlayer.csproj:
+   36:         <Reference Include="Ephemera.AudioLib">
+   39:         <Reference Include="Ephemera.MidiLib">
+
+C:\Dev\Apps\Midifrier\Midifrier.csproj:
+   61:         <Reference Include="Ephemera.MidiLib">
+
+C:\Dev\Apps\MidiGenerator\MidiGenerator.csproj:
+   42:         <Reference Include="Ephemera.MidiLib">
+   45:         <Reference Include="Ephemera.MusicLib">
+
+C:\Dev\Apps\NDraw\NDraw.csproj:
+
+C:\Dev\Apps\Nebulator\App\App.csproj:
+   35:         <Reference Include="Ephemera.MidiLib">
+   38:         <Reference Include="Ephemera.MusicLib">
+   47:         <Reference Include="Ephemera.NebOsc">
+
+C:\Dev\Apps\Nebulator\Script\Script.csproj:
+   30:         <Reference Include="Ephemera.MidiLib">
+   33:         <Reference Include="Ephemera.MusicLib">
+
+C:\Dev\Apps\Nebulua\Nebulua.csproj:
+   52:         <Reference Include="Ephemera.MidiLib">
+   55:         <Reference Include="Ephemera.MusicLib">
+
+C:\Dev\Apps\Wavicler\Wavicler.csproj:
+   37:       <Reference Include="Ephemera.AudioLib">
+
+C:\Dev\Libs\MidiLib\MidiLib.csproj:
+   45:         <Reference Include="Ephemera.NebOsc">
+
